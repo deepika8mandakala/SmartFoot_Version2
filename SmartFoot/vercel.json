@@ -4,6 +4,9 @@
 
     { "src": "^/walkability$", "dest": "/walkability.html" },
     { "src": "^/safe-route$", "dest": "/safe-route.html" },
+    { "src": "^/home$", "dest": "/home.html" },
+
+    { "src": "^/static/(.*)", "dest": "/static/$1" },
 
     { "src": "^/api/(.*)", "dest": "/api/index.py" }
   ]
