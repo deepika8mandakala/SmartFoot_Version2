@@ -344,7 +344,7 @@
  async function fetchWalkability(lat, lng) {
   try {
     const res = await fetch(
-      `https://your-render-url.onrender.com/api/walkability-data?lat=${lat}&lng=${lng}`
+      `https://smartfoot-backend.onrender.com/api/walkability-data?lat=${lat}&lng=${lng}`
     );
 
     const data = await res.json();
