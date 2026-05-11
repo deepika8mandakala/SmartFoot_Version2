@@ -1,0 +1,13 @@
+{
+    "sidewalk_width": 52.6,
+    "pavement_quality": 81.0,
+    "lighting": 48.0,
+    "park": 72.1,
+    "greenery": 83.3,
+    "air_quality": 67.6,
+    "thermal_comfort": 84.7,
+    "attractiveness": 77.4,
+    "low_traffic": 75.9,
+    "pedestrian_areas": 69.4,
+    "slope": 92.4
+}
