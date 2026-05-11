@@ -190,71 +190,8 @@ Evaluates routes using **8 key factors**:
 - Node.js (optional, for frontend dev tools)
 - Modern web browser with GPS support
 
-### Local Installation
-
-1. **Clone the repository:**
-
-```bash
-git clone https://github.com/deepika8mandakala/SmartFoot_Version2.git
-cd SmartFoot_Version2
-```
-
-2. **Set up Python environment:**
-
-```bash
-python -m venv venv
-```
-
-**Activate virtual environment:**
-
-**Windows:**
-
-```bash
-venv\Scripts\activate
-```
-
-**macOS/Linux:**
-
-```bash
-source venv/bin/activate
-```
-
-3. **Install dependencies:**
-
-```bash
-pip install -r requirements.txt
-```
-
-4. **Train/refresh ML model:**
-
-```bash
-python backend/train_model.py
-```
-
-5. **Run Flask backend:**
-
-```bash
-python app.py
-```
-
-6. **Open in browser:**
-
-```
-http://localhost:5000
-```
 
 ### Cloud Deployment (Vercel)
-
-SmartFoot v2 is optimized for Vercel deployment:
-
-```bash
-# 1. Push to GitHub
-git push origin main
-
-# 2. Connect to Vercel (https://vercel.com)
-# 3. Select repository
-# 4. Deploy with one click
-```
 
 **Live URL:** https://smart-foot-version2.vercel.app
 
@@ -268,37 +205,34 @@ SmartFoot_Version2/
 ├── 📄 README.md                    # Project documentation
 ├── 📄 vercel.json                  # Vercel deployment config
 │
-├── 🎨 Frontend Files
-│   ├── index.html                  # Entry point
-│   ├── home.html                   # Landing page
-│   ├── safe-route.html             # Main route planner
-│   ├── walkability.html            # Score dashboard
-│   ├── about.html                  # About page
-│   ├── feedback.html               # Feedback form
-│   ├── report-issues.html          # Issue reporting
-│   │
-│   └── static/                     # CSS, JS, images
-│       ├── styles/
-│       ├── scripts/
-│       └── images/
+├── index.html                  # Entry point
+├── home.html                   # Landing page
+├── safe-route.html             # Main route planner
+├── walkability.html            # Score dashboard
+├── about.html                  # About page
+├── feedback.html               # Feedback form
+├── report-issues.html          # Issue reporting
+│
+└── static/                     # CSS, JS, images
+│  ├── styles/
+│  ├── scripts/
+│   └── images/
 │
 ├── ⚙️ Backend
 │   ├── app.py                      # Flask server
 │   ├── backend/
-│   │   ├── train_model.py          # ML model training
-│   │   ├── model.pkl               # Trained model
 │   │   └── ...
 │   │
 │   └── backend-deploy/             # Deployment config
-│       └── api_backup/             # API backups
+│   └── api_backup/             # API backups
 │
-├── 📸 Assets
-│   ├── smart-foot.png              # Logo
-│   ├── profile.jpg                 # Profile image
-│   └── profile1.png                # Profile variant
+├
+├── smart-foot.png              # Logo
+├── profile.jpg                 # Profile image
+└── profile1.png                # Profile variant
 │
-└── 📋 Configuration
-    └── requirements.txt            # Python dependencies
+└── 
+└── requirements.txt            # Python dependencies
 ```
 
 ---
@@ -364,21 +298,6 @@ GET /predict-score?lat=17.7194&lng=83.3118
 - **Source:** Synthetic data + OSM features
 - **Location Focus:** Visakhapatnam
 - **Data File:** `visakhapatnam_safety_scores.json`
-
-### Model Location
-
-```
-backend/model.pkl
-```
-
-### Retraining
-
-Update model with new data:
-
-```bash
-python backend/train_model.py
-```
-
 ---
 
 ## 🌐 Mapillary Configuration
