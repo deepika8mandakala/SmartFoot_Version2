@@ -100,7 +100,9 @@
       if (!e.target.closest(".location-input-container")) hideSuggestions();
     });
   }
-
+  function onLocationSelected(lat, lng) {
+    fetchWalkability(lat, lng);
+  }
   // ─── Global Autocomplete (Place Names Only, No Progressive Filtering) ────────
   /**
    * Setup autocomplete for location input.
