@@ -155,7 +155,6 @@ def get_safety_scores():
         return jsonify({"error": "Server error"}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="127.0.0.1", port=port)
-app = Flask(__name__, static_folder="static", template_folder="templates")
-CORS(app)
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
