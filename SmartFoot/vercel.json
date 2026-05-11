@@ -5,3 +5,10 @@
     }
   }
 }
+{
+  "routes": [
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/walkability", "dest": "/walkability.html" },
+    { "src": "/safe-route", "dest": "/safe-route.html" }
+  ]
+}
