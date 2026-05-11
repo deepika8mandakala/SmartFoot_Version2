@@ -5,8 +5,6 @@
     { "src": "^/home$", "dest": "/home.html" },
     { "src": "^/walkability$", "dest": "/walkability.html" },
     { "src": "^/safe-route$", "dest": "/safe-route.html" },
-    { "src": "^/feedback$", "dest": "/feedback.html" },
-    { "src": "^/report-issues$", "dest": "/report-issues.html" },
 
     { "src": "/(.*)", "dest": "/$1" }
   ]
