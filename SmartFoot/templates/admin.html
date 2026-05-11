@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background-color: #eef8f0; }
+    h1 { color: #2e7d32; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #ccc; }
+    th { background-color: #2e7d32; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Feedback Reports</h1>
+  <table>
+    <tr>
+      <th>Location</th>
+      <th>Sidewalk</th>
+      <th>Pavement</th>
+      <th>Greenery</th>
+      <th>Traffic</th>
+      <th>Air</th>
+      <th>Total</th>
+      <th>Time</th>
+    </tr>
+    {% for row in feedback %}
+    <tr>
+      <td>{{ row[1] }}</td>
+      <td>{{ row[2] }}</td>
+      <td>{{ row[3] }}</td>
+      <td>{{ row[4] }}</td>
+      <td>{{ row[5] }}</td>
+      <td>{{ row[6] }}</td>
+      <td>{{ row[7] }}</td>
+      <td>{{ row[8] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

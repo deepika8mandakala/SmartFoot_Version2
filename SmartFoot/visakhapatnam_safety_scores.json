@@ -1,0 +1,731 @@
+[
+  {
+    "location": "RK Beach Road",
+    "lat": 17.7194,
+    "lng": 83.3118,
+    "area_type": "tourist",
+    "lighting_score": 6,
+    "footpath_score": 4,
+    "greenery_score": 3,
+    "infrastructure_score": 10,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Mall"
+    ]
+  },
+  {
+    "location": "Jagadamba Junction",
+    "lat": 17.7135,
+    "lng": 83.3038,
+    "area_type": "commercial",
+    "lighting_score": 9,
+    "footpath_score": 9,
+    "greenery_score": 5,
+    "infrastructure_score": 10,
+    "safety_score": 8.2,
+    "safety_landmarks": [
+      "Police Booth",
+      "Bus Stop"
+    ]
+  },
+  {
+    "location": "Siripuram Junction",
+    "lat": 17.7176,
+    "lng": 83.3193,
+    "area_type": "commercial",
+    "lighting_score": 7,
+    "footpath_score": 10,
+    "greenery_score": 7,
+    "infrastructure_score": 9,
+    "safety_score": 8.2,
+    "safety_landmarks": [
+      "School"
+    ]
+  },
+  {
+    "location": "Kailasagiri",
+    "lat": 17.7446,
+    "lng": 83.3369,
+    "area_type": "tourist",
+    "lighting_score": 8,
+    "footpath_score": 5,
+    "greenery_score": 3,
+    "infrastructure_score": 10,
+    "safety_score": 6.5,
+    "safety_landmarks": [
+      "Temple"
+    ]
+  },
+  {
+    "location": "MVP Colony",
+    "lat": 17.7512,
+    "lng": 83.3431,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 8,
+    "greenery_score": 8,
+    "infrastructure_score": 10,
+    "safety_score": 7.8,
+    "safety_landmarks": [
+      "Mall",
+      "Hospital"
+    ]
+  },
+  {
+    "location": "Dwaraka Nagar",
+    "lat": 17.721,
+    "lng": 83.3071,
+    "area_type": "commercial",
+    "lighting_score": 9,
+    "footpath_score": 5,
+    "greenery_score": 5,
+    "infrastructure_score": 6,
+    "safety_score": 6.2,
+    "safety_landmarks": [
+      "Temple"
+    ]
+  },
+  {
+    "location": "Rushikonda Beach",
+    "lat": 17.7825,
+    "lng": 83.3825,
+    "area_type": "tourist",
+    "lighting_score": 10,
+    "footpath_score": 8,
+    "greenery_score": 5,
+    "infrastructure_score": 8,
+    "safety_score": 7.8,
+    "safety_landmarks": [
+      "Mall",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Gajuwaka",
+    "lat": 17.6792,
+    "lng": 83.2094,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 8,
+    "greenery_score": 6,
+    "infrastructure_score": 8,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "School",
+      "Park",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Madhurawada",
+    "lat": 17.7991,
+    "lng": 83.3661,
+    "area_type": "residential",
+    "lighting_score": 6,
+    "footpath_score": 8,
+    "greenery_score": 8,
+    "infrastructure_score": 5,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Bus Stop",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Seethammadhara",
+    "lat": 17.743,
+    "lng": 83.3022,
+    "area_type": "residential",
+    "lighting_score": 7,
+    "footpath_score": 5,
+    "greenery_score": 3,
+    "infrastructure_score": 9,
+    "safety_score": 6.0,
+    "safety_landmarks": [
+      "School"
+    ]
+  },
+  {
+    "location": "Waltair Uplands",
+    "lat": 17.7268,
+    "lng": 83.3197,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 8,
+    "greenery_score": 3,
+    "infrastructure_score": 5,
+    "safety_score": 5.2,
+    "safety_landmarks": [
+      "Bus Stop",
+      "Police Booth",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Asilmetta",
+    "lat": 17.7155,
+    "lng": 83.3088,
+    "area_type": "commercial",
+    "lighting_score": 7,
+    "footpath_score": 4,
+    "greenery_score": 9,
+    "infrastructure_score": 7,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Mall",
+      "School",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Venkojipalem",
+    "lat": 17.7473,
+    "lng": 83.3262,
+    "area_type": "residential",
+    "lighting_score": 9,
+    "footpath_score": 4,
+    "greenery_score": 8,
+    "infrastructure_score": 7,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Hospital"
+    ]
+  },
+  {
+    "location": "Bheemili",
+    "lat": 17.8916,
+    "lng": 83.4514,
+    "area_type": "tourist",
+    "lighting_score": 5,
+    "footpath_score": 6,
+    "greenery_score": 3,
+    "infrastructure_score": 7,
+    "safety_score": 5.2,
+    "safety_landmarks": [
+      "Police Booth",
+      "Bus Stop",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Steel Plant Township",
+    "lat": 17.6502,
+    "lng": 83.2256,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 7,
+    "greenery_score": 6,
+    "infrastructure_score": 5,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Mall",
+      "Bus Stop"
+    ]
+  },
+  {
+    "location": "Scindia",
+    "lat": 17.6843,
+    "lng": 83.2041,
+    "area_type": "industrial",
+    "lighting_score": 8,
+    "footpath_score": 9,
+    "greenery_score": 7,
+    "infrastructure_score": 8,
+    "safety_score": 8.0,
+    "safety_landmarks": [
+      "Temple",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Old Gajuwaka",
+    "lat": 17.6785,
+    "lng": 83.2067,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 4,
+    "greenery_score": 3,
+    "infrastructure_score": 5,
+    "safety_score": 5.0,
+    "safety_landmarks": [
+      "Bus Stop"
+    ]
+  },
+  {
+    "location": "Kancherapalem",
+    "lat": 17.7183,
+    "lng": 83.2732,
+    "area_type": "residential",
+    "lighting_score": 6,
+    "footpath_score": 5,
+    "greenery_score": 8,
+    "infrastructure_score": 10,
+    "safety_score": 7.2,
+    "safety_landmarks": [
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Town Kotha Road",
+    "lat": 17.6925,
+    "lng": 83.2854,
+    "area_type": "commercial",
+    "lighting_score": 9,
+    "footpath_score": 8,
+    "greenery_score": 8,
+    "infrastructure_score": 5,
+    "safety_score": 7.5,
+    "safety_landmarks": [
+      "School",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Poorna Market",
+    "lat": 17.6923,
+    "lng": 83.2907,
+    "area_type": "commercial",
+    "lighting_score": 6,
+    "footpath_score": 9,
+    "greenery_score": 4,
+    "infrastructure_score": 9,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Mall",
+      "Park",
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Chinagantyada",
+    "lat": 17.6849,
+    "lng": 83.2075,
+    "area_type": "industrial",
+    "lighting_score": 8,
+    "footpath_score": 8,
+    "greenery_score": 6,
+    "infrastructure_score": 5,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Duvvada",
+    "lat": 17.6365,
+    "lng": 83.1977,
+    "area_type": "residential",
+    "lighting_score": 10,
+    "footpath_score": 4,
+    "greenery_score": 3,
+    "infrastructure_score": 6,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Park",
+      "Bus Stop",
+      "Hospital"
+    ]
+  },
+  {
+    "location": "Gopalapatnam",
+    "lat": 17.7255,
+    "lng": 83.2371,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 8,
+    "greenery_score": 8,
+    "infrastructure_score": 6,
+    "safety_score": 7.5,
+    "safety_landmarks": [
+      "Temple",
+      "Mall",
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Pendurthi",
+    "lat": 17.8232,
+    "lng": 83.2662,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 4,
+    "greenery_score": 8,
+    "infrastructure_score": 6,
+    "safety_score": 6.5,
+    "safety_landmarks": [
+      "Mall",
+      "Bus Stop"
+    ]
+  },
+  {
+    "location": "Anakapalle",
+    "lat": 17.6868,
+    "lng": 83.0036,
+    "area_type": "commercial",
+    "lighting_score": 6,
+    "footpath_score": 4,
+    "greenery_score": 7,
+    "infrastructure_score": 8,
+    "safety_score": 6.2,
+    "safety_landmarks": [
+      "Temple",
+      "Bus Stop",
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Simhachalam",
+    "lat": 17.7636,
+    "lng": 83.253,
+    "area_type": "religious",
+    "lighting_score": 9,
+    "footpath_score": 8,
+    "greenery_score": 5,
+    "infrastructure_score": 7,
+    "safety_score": 7.2,
+    "safety_landmarks": [
+      "Hospital",
+      "Mall"
+    ]
+  },
+  {
+    "location": "Yendada",
+    "lat": 17.7562,
+    "lng": 83.3501,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 10,
+    "greenery_score": 4,
+    "infrastructure_score": 5,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Mall",
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Malkapuram",
+    "lat": 17.6858,
+    "lng": 83.2335,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 6,
+    "greenery_score": 3,
+    "infrastructure_score": 10,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Temple",
+      "Park"
+    ]
+  },
+  {
+    "location": "Zila Parishad",
+    "lat": 17.7265,
+    "lng": 83.3032,
+    "area_type": "government",
+    "lighting_score": 6,
+    "footpath_score": 5,
+    "greenery_score": 7,
+    "infrastructure_score": 5,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Temple",
+      "Park"
+    ]
+  },
+  {
+    "location": "VUDA Park",
+    "lat": 17.7239,
+    "lng": 83.3217,
+    "area_type": "tourist",
+    "lighting_score": 9,
+    "footpath_score": 8,
+    "greenery_score": 8,
+    "infrastructure_score": 9,
+    "safety_score": 8.5,
+    "safety_landmarks": [
+      "Police Booth"
+    ]
+  },
+  {
+    "location": "Indira Gandhi Zoological Park",
+    "lat": 17.754,
+    "lng": 83.3541,
+    "area_type": "tourist",
+    "lighting_score": 5,
+    "footpath_score": 4,
+    "greenery_score": 3,
+    "infrastructure_score": 7,
+    "safety_score": 4.8,
+    "safety_landmarks": [
+      "Police Booth",
+      "Temple",
+      "Mall"
+    ]
+  },
+  {
+    "location": "HB Colony",
+    "lat": 17.7468,
+    "lng": 83.3247,
+    "area_type": "residential",
+    "lighting_score": 10,
+    "footpath_score": 6,
+    "greenery_score": 3,
+    "infrastructure_score": 9,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Police Booth",
+      "Park"
+    ]
+  },
+  {
+    "location": "Balayya Sastri Layout",
+    "lat": 17.7443,
+    "lng": 83.3283,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 10,
+    "greenery_score": 5,
+    "infrastructure_score": 9,
+    "safety_score": 7.2,
+    "safety_landmarks": [
+      "Mall",
+      "School"
+    ]
+  },
+  {
+    "location": "East Point Colony",
+    "lat": 17.7277,
+    "lng": 83.3313,
+    "area_type": "residential",
+    "lighting_score": 7,
+    "footpath_score": 8,
+    "greenery_score": 6,
+    "infrastructure_score": 6,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Park",
+      "School",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Sagar Nagar",
+    "lat": 17.759,
+    "lng": 83.359,
+    "area_type": "residential",
+    "lighting_score": 9,
+    "footpath_score": 7,
+    "greenery_score": 3,
+    "infrastructure_score": 8,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "School",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Arilova",
+    "lat": 17.7558,
+    "lng": 83.3325,
+    "area_type": "residential",
+    "lighting_score": 7,
+    "footpath_score": 8,
+    "greenery_score": 5,
+    "infrastructure_score": 8,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Hospital"
+    ]
+  },
+  {
+    "location": "Kurmannapalem",
+    "lat": 17.6831,
+    "lng": 83.1882,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 4,
+    "greenery_score": 4,
+    "infrastructure_score": 9,
+    "safety_score": 5.5,
+    "safety_landmarks": [
+      "Bus Stop"
+    ]
+  },
+  {
+    "location": "Aganampudi",
+    "lat": 17.6615,
+    "lng": 83.1733,
+    "area_type": "industrial",
+    "lighting_score": 5,
+    "footpath_score": 6,
+    "greenery_score": 7,
+    "infrastructure_score": 8,
+    "safety_score": 6.5,
+    "safety_landmarks": [
+      "Park"
+    ]
+  },
+  {
+    "location": "Pedagantyada",
+    "lat": 17.6621,
+    "lng": 83.2169,
+    "area_type": "industrial",
+    "lighting_score": 9,
+    "footpath_score": 7,
+    "greenery_score": 6,
+    "infrastructure_score": 6,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Park"
+    ]
+  },
+  {
+    "location": "BHPV",
+    "lat": 17.6982,
+    "lng": 83.2534,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 9,
+    "greenery_score": 4,
+    "infrastructure_score": 5,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Police Booth",
+      "Mall"
+    ]
+  },
+  {
+    "location": "NAD Junction",
+    "lat": 17.7405,
+    "lng": 83.2226,
+    "area_type": "commercial",
+    "lighting_score": 7,
+    "footpath_score": 4,
+    "greenery_score": 3,
+    "infrastructure_score": 9,
+    "safety_score": 5.8,
+    "safety_landmarks": [
+      "Park"
+    ]
+  },
+  {
+    "location": "Simhapuri Colony",
+    "lat": 17.7745,
+    "lng": 83.3001,
+    "area_type": "residential",
+    "lighting_score": 6,
+    "footpath_score": 5,
+    "greenery_score": 6,
+    "infrastructure_score": 9,
+    "safety_score": 6.5,
+    "safety_landmarks": [
+      "Hospital",
+      "Police Booth",
+      "Temple"
+    ]
+  },
+  {
+    "location": "Pithapuram Colony",
+    "lat": 17.7261,
+    "lng": 83.3131,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 6,
+    "greenery_score": 9,
+    "infrastructure_score": 8,
+    "safety_score": 7.8,
+    "safety_landmarks": [
+      "Hospital",
+      "School",
+      "Park"
+    ]
+  },
+  {
+    "location": "Allipuram",
+    "lat": 17.7025,
+    "lng": 83.2968,
+    "area_type": "residential",
+    "lighting_score": 6,
+    "footpath_score": 6,
+    "greenery_score": 8,
+    "infrastructure_score": 6,
+    "safety_score": 6.5,
+    "safety_landmarks": [
+      "Park",
+      "Hospital"
+    ]
+  },
+  {
+    "location": "Lawsons Bay",
+    "lat": 17.7294,
+    "lng": 83.3294,
+    "area_type": "residential",
+    "lighting_score": 8,
+    "footpath_score": 8,
+    "greenery_score": 9,
+    "infrastructure_score": 7,
+    "safety_score": 8.0,
+    "safety_landmarks": [
+      "Mall"
+    ]
+  },
+  {
+    "location": "One Town",
+    "lat": 17.6882,
+    "lng": 83.2895,
+    "area_type": "residential",
+    "lighting_score": 6,
+    "footpath_score": 7,
+    "greenery_score": 9,
+    "infrastructure_score": 6,
+    "safety_score": 7.0,
+    "safety_landmarks": [
+      "Temple"
+    ]
+  },
+  {
+    "location": "HB Colony Extension",
+    "lat": 17.7505,
+    "lng": 83.3287,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 10,
+    "greenery_score": 9,
+    "infrastructure_score": 9,
+    "safety_score": 8.2,
+    "safety_landmarks": [
+      "Park"
+    ]
+  },
+  {
+    "location": "Saligramapuram",
+    "lat": 17.7231,
+    "lng": 83.2965,
+    "area_type": "residential",
+    "lighting_score": 5,
+    "footpath_score": 9,
+    "greenery_score": 5,
+    "infrastructure_score": 8,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Mall"
+    ]
+  },
+  {
+    "location": "Gnanapuram",
+    "lat": 17.7008,
+    "lng": 83.2909,
+    "area_type": "residential",
+    "lighting_score": 9,
+    "footpath_score": 5,
+    "greenery_score": 5,
+    "infrastructure_score": 8,
+    "safety_score": 6.8,
+    "safety_landmarks": [
+      "Park",
+      "Police Booth",
+      "Mall"
+    ]
+  }
+]

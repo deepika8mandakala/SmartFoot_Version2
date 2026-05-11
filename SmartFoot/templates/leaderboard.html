@@ -1,0 +1,6 @@
+<h2>Top Ranked Walkable Locations</h2>
+<ul>
+  {% for loc in leaderboard %}
+    <li><strong>{{ loc[0] }}</strong> — Avg Score: {{ loc[1]|round(2) }}</li>
+  {% endfor %}
+</ul>

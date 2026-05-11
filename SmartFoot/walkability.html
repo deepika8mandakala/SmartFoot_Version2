@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartFoot — Walkability Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    /* ── Design tokens ──────────────────────────────────────────────── */
+    :root {
+      --green-900: #1b4d1e;
+      --green-700: #2e7d32;
+      --green-500: #43a047;
+      --green-100: #e8f5e9;
+      --teal:      #00897b;
+      --amber:     #f59e0b;
+      --red:       #ef4444;
+      --blue:      #3b82f6;
+      --water:     #0ea5e9;
+      --ink:       #1a1f1b;
+      --muted:     #64726a;
+      --surface:   #f6faf6;
+      --card:      #ffffff;
+      --border:    #d6e8d8;
+      --radius:    14px;
+      --shadow:    0 8px 32px rgba(0,0,0,0.10);
+    }
+
+    /* ── Reset & base ───────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    header {
+      background: var(--green-900);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo img { height: 38px; width: 38px; border-radius: 50%; object-fit: cover; }
+    .logo-text {
+      font-family: "Poppins", sans-serif;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .logo-text span { color: #f4f8f6; }
+    nav a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-left: 1.5rem;
+      transition: color .2s;
+    }
+    nav a:hover { color: #fff; }
+
+    /* ── Layout ─────────────────────────────────────────────────────── */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Map panel ──────────────────────────────────────────────────── */
+    .map-panel { display: flex; flex-direction: column; gap: 1rem; }
+
+    #status-bar {
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background .3s, color .3s;
+    }
+    #status-bar.loading  { background: #e0f2fe; color: #0369a1; }
+    #status-bar.success  { background: var(--green-100); color: var(--green-700); }
+    #status-bar.warning  { background: #fef9c3; color: #92400e; }
+    #status-bar.error    { background: #fee2e2; color: #991b1b; }
+    #status-bar.blocked  { background: #ffe4e6; color: #9f1239; }
+    #status-bar .pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: currentColor; flex-shrink: 0;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .4; transform: scale(1.4); }
+    }
+
+    #map {
+      height: 520px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .map-controls { display: flex; gap: .75rem; }
+    .btn {
+      flex: 1;
+      padding: 11px 18px;
+      border: none;
+      border-radius: 10px;
+      font-family: "Poppins", sans-serif;
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background .2s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--green-700); color: #fff; }
+    .btn-primary:hover { background: var(--green-900); }
+    .btn-outline { background: #fff; color: var(--green-700); border: 1.5px solid var(--green-700); }
+    .btn-outline:hover { background: var(--green-100); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Score panel ─────────────────────────────────────────────────── */
+    .score-panel { display: flex; flex-direction: column; gap: 1rem; }
+
+    .panel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .score-header { text-align: center; margin-bottom: .75rem; }
+    .score-header h2 {
+      font-family: "Poppins", sans-serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: .25rem;
+    }
+    .score-header p { font-size: .8rem; color: var(--muted); }
+
+    /* SVG Donut */
+    .donut-wrap { display: flex; justify-content: center; margin: .5rem 0 1rem; }
+    .donut-container { position: relative; width: 140px; height: 140px; }
+    .donut-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+    .donut-track { fill: none; stroke: #e5e7eb; stroke-width: 14; }
+    .donut-fill {
+      fill: none;
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 339.3;
+      stroke-dashoffset: 339.3;
+      transition: stroke-dashoffset .9s cubic-bezier(.4,0,.2,1), stroke .4s;
+    }
+    .donut-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .donut-value {
+      font-family: "Poppins", sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--green-700);
+      transition: color .4s;
+    }
+    .donut-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    /* Confidence row */
+    .confidence-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .chip-live    { background: #dcfce7; color: #15803d; }
+    .chip-offline { background: #fef9c3; color: #92400e; }
+    .chip-blocked { background: #fee2e2; color: #991b1b; }
+
+    /* Alert box */
+    .alert-box {
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: .85rem;
+    }
+    .alert-box.water   { background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; }
+    .alert-box.blocked { background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; }
+    .alert-box i { margin-top: 2px; flex-shrink: 0; }
+    .alert-title { font-weight: 700; margin-bottom: 3px; }
+
+    /* Factors */
+    .factors-list { display: flex; flex-direction: column; gap: 10px; }
+    .factor-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .factor-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .factor-body { min-width: 0; }
+    .factor-name { font-size: .8rem; font-weight: 700; margin-bottom: 4px; }
+    .factor-bar-wrap {
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .factor-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width .8s cubic-bezier(.4,0,.2,1);
+    }
+    .factor-note { font-size: .7rem; color: var(--muted); margin-top: 3px; }
+    .factor-pct {
+      font-family: "Poppins", sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Weight tags */
+    .weight-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: .75rem; }
+    .weight-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    /* Legend */
+    .panel-title {
+      font-family: "Poppins", sans-serif;
+      font-size: .875rem;
+      font-weight: 700;
+      margin-bottom: .75rem;
+      color: var(--ink);
+    }
+    .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: .8rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Mapillary row */
+    .mapillary-row {
+      display: flex; align-items: center; gap: 10px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: .82rem;
+    }
+
+    /* Skeleton loader */
+    @keyframes shimmer {
+      to { background-position: 200% center; }
+    }
+    .skel {
+      background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+      background-size: 200% auto;
+      animation: shimmer 1.4s linear infinite;
+      border-radius: 8px;
+    }
+
+    footer {
+      background: var(--green-900);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 14px;
+      font-size: .8rem;
+      margin-top: auto;
+    }
+
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; padding: 1rem; }
+      #map { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="smart-foot.png" alt="SmartFoot">
+    <span class="logo-text">Smart<span>Foot</span></span>
+  </div>
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="safe-route.html">Safe Route</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<div class="workspace">
+
+  <!-- ── Left: Map ── -->
+  <div class="map-panel">
+    <div id="status-bar" class="loading">
+      <div class="pulse"></div>
+      <span id="status-text">Detecting your location…</span>
+    </div>
+    <div id="map" aria-label="Walkability map"></div>
+    <div class="map-controls">
+      <button class="btn btn-primary" id="refreshBtn" onclick="refreshAnalysis()">
+        <i class="fas fa-rotate-right"></i> Refresh Analysis
+      </button>
+      <button class="btn btn-outline" onclick="shareLocation()">
+        <i class="fas fa-share-nodes"></i> Share
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Right: Score panel ── -->
+  <div class="score-panel">
+
+    <!-- Overall donut card -->
+    <div class="panel-card">
+      <div class="score-header">
+        <h2>Walkability Score</h2>
+        <p>Click anywhere on the map to analyse that spot</p>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut-container">
+          <svg class="donut-svg" viewBox="0 0 120 120">
+            <circle class="donut-track" cx="60" cy="60" r="54"/>
+            <circle class="donut-fill" id="donutFill" cx="60" cy="60" r="54"/>
+          </svg>
+          <div class="donut-label">
+            <div class="donut-value" id="scoreValue">—</div>
+            <div class="donut-sub" id="scoreGrade">Analysing</div>
+          </div>
+        </div>
+      </div>
+      <div class="confidence-row">
+        <span id="dataChip" class="chip chip-offline">
+          <i class="fas fa-circle" style="font-size:.5rem;"></i> Loading
+        </span>
+        <span id="confidenceText" style="font-size:.78rem;"></span>
+      </div>
+      <!-- Non-walkable alert (hidden by default) -->
+      <div id="alertBox" style="display:none; margin-top:.5rem;"></div>
+    </div>
+
+    <!-- Factor breakdown card -->
+    <div class="panel-card">
+      <div class="panel-title">
+        <i class="fas fa-sliders" style="color:var(--green-500);margin-right:6px;"></i>
+        Factor Breakdown
+      </div>
+      <div class="factors-list" id="factorsList">
+        <div class="skel" style="height:44px;"></div>
+        <div class="skel" style="height:44px;"></div>
+        <div class="skel" style="height:44px;"></div>
+        <div class="skel" style="height:44px;"></div>
+      </div>
+      <div class="weight-tags" id="weightTags"></div>
+    </div>
+
+    <!-- Mapillary visual coverage card -->
+    <div class="panel-card" id="mapillaryCard" style="display:none;">
+      <div class="panel-title">
+        <i class="fas fa-camera" style="color:var(--teal);margin-right:6px;"></i>
+        Visual Coverage (Mapillary)
+      </div>
+      <div class="mapillary-row" id="mapillaryRow">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Checking street-level imagery…</span>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="panel-card">
+      <div class="panel-title">
+        <i class="fas fa-circle-info" style="color:var(--muted);margin-right:6px;"></i>
+        Score Guide
+      </div>
+      <div class="legend-grid">
+        <div class="legend-item"><div class="legend-dot" style="background:#22c55e;"></div><span>80–100 Excellent</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#84cc16;"></div><span>60–79  Good</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div><span>40–59  Fair</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div><span>0–39   Poor</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0ea5e9;"></div><span>Water / Inaccessible</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a855f7;"></div><span>Private / Restricted</span></div>
+      </div>
+    </div>
+
+  </div><!-- /score-panel -->
+</div><!-- /workspace -->
+
+<footer>SmartFoot · Powered by OpenStreetMap &amp; Mapillary · For pedestrian use only</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONFIGURATION — tweak weights and thresholds here without touching logic
+   ═══════════════════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  overpassUrl:     "https://overpass-api.de/api/interpreter",
+  mapillaryToken:  window.MAPILLARY_ACCESS_TOKEN || null,
+  analysisRadius:  300,     // metres for OSM queries
+  mapillaryDelta:  0.003,   // degree bbox delta for Mapillary image lookup
+
+  // Scoring weights (must sum to 1.0)
+  weights: {
+    sidewalk:   0.30,   // pedestrian path presence
+    roadType:   0.20,   // type of roads (motorway vs residential)
+    lighting:   0.15,   // lit=yes ways & street lamps
+    crossings:  0.10,   // designated pedestrian crossings
+    mapillary:  0.10,   // visual coverage signal
+    density:    0.15,   // walkable node/feature density
+  },
+
+  // Non-walkable thresholds
+  thresholds: {
+    waterElements:     1,   // ≥1 water element → block
+    restrictedWays:    3,   // ≥3 private/restricted ways → block
+    highwayOnlyRoads:  2,   // motorway count with 0 footways + 0 crossings → block
+    heavyRoadPenalty:  3,   // ≥3 heavy roads → apply score multiplier
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════════════════════ */
+let map, userLocation;
+const layers = { user: null, ring: null };
+let busy = false;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BOOTSTRAP
+   ═══════════════════════════════════════════════════════════════════════════ */
+window.onload = () => {
+  const defaultLoc = { lat: 17.6868, lng: 83.2185 };   // Visakhapatnam
+  initMap(defaultLoc);
+
+  if (!navigator.geolocation) {
+    runAnalysis(defaultLoc);
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      map.setView([loc.lat, loc.lng], 16);
+      runAnalysis(loc);
+    },
+    () => runAnalysis(defaultLoc),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 180000 }
+  );
+};
+
+function initMap(center) {
+  map = L.map("map", { zoomControl: true }).setView([center.lat, center.lng], 16);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+
+  layers.user = L.layerGroup().addTo(map);
+  layers.ring = L.layerGroup().addTo(map);
+
+  map.on("click", (e) => {
+    if (busy) return;
+    runAnalysis({ lat: e.latlng.lat, lng: e.latlng.lng });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODULE 1 — getOSMFeatures(lat, lng)
+   Single Overpass query → returns { footways, crossings, ... }
+   ═══════════════════════════════════════════════════════════════════════════ */
+async function getOSMFeatures(lat, lng) {
+  const R = CONFIG.analysisRadius;
+
+  /* ── Overpass QL ───────────────────────────────────────────────────────
+     One union query; `out count tags` keeps payload tiny (counts only).   */
+  const q = `
+[out:json][timeout:18];
+(
+  /* Pedestrian infrastructure */
+  way(around:${R},${lat},${lng})[highway~"^(footway|pedestrian|path|living_street|steps|bridleway)$"];
+  node(around:${R},${lat},${lng})[highway="crossing"];
+  node(around:${R},${lat},${lng})[foot="yes"];
+
+  /* Road classification */
+  way(around:${R},${lat},${lng})[highway~"^(motorway|motorway_link|trunk|trunk_link)$"];
+  way(around:${R},${lat},${lng})[highway~"^(primary|primary_link|secondary|secondary_link)$"];
+  way(around:${R},${lat},${lng})[highway~"^(tertiary|residential|unclassified|service)$"];
+
+  /* Street lighting */
+  node(around:${R},${lat},${lng})[highway="street_lamp"];
+  way(around:${R},${lat},${lng})[lit="yes"];
+
+  /* Green space */
+  way(around:${R},${lat},${lng})[leisure~"^(park|garden|playground|recreation_ground|nature_reserve)$"];
+  way(around:${R},${lat},${lng})[landuse~"^(grass|forest|meadow|village_green)$"];
+  node(around:${R},${lat},${lng})[natural="tree"];
+
+  /* ─── WATER BODIES (critical for non-walkable detection) ─── */
+  way(around:${R},${lat},${lng})[natural~"^(water|bay|coastline|wetland|beach|sand)$"];
+  way(around:${R},${lat},${lng})[waterway~"^(river|stream|canal|drain|ditch)$"];
+  way(around:${R},${lat},${lng})[landuse~"^(reservoir|basin)$"];
+  relation(around:${R},${lat},${lng})[natural="water"];
+  node(around:${R},${lat},${lng})[natural~"^(water|bay)$"];
+
+  /* Restricted / private zones */
+  way(around:${R},${lat},${lng})[access~"^(private|no|restricted)$"];
+  way(around:${R},${lat},${lng})[landuse~"^(military|industrial)$"];
+
+  /* Amenities & density signals */
+  node(around:${R},${lat},${lng})[amenity~"^(hospital|clinic|police|fire_station|pharmacy|bus_stop|bus_station)$"];
+  node(around:${R},${lat},${lng})[shop];
+  node(around:${R},${lat},${lng})[amenity~"^(restaurant|cafe|bank|atm|supermarket)$"];
+);
+out count tags;
+  `.trim();
+
+  const res = await fetch(CONFIG.overpassUrl, {
+    method:  "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body:    `data=${encodeURIComponent(q)}`,
+    signal:  AbortSignal.timeout(20000),
+  });
+  if (!res.ok) throw new Error(`Overpass HTTP ${res.status}`);
+
+  const json = await res.json();
+  return _categorise(json.elements || []);
+}
+
+/* Internal: bucket each OSM element by semantic category */
+function _categorise(elements) {
+  const c = {
+    footways: [], crossings: [], footNodes: [],
+    heavyRoads: [], mediumRoads: [], localRoads: [],
+    lamps: [], litWays: [],
+    greenSpaces: [], trees: [],
+    water: [],       // ← all water features land here
+    restricted: [],
+    emergency: [], amenities: [],
+  };
+
+  const hwMap = {
+    footway: "footways", pedestrian: "footways", path: "footways",
+    living_street: "footways", steps: "footways", bridleway: "footways",
+    motorway: "heavyRoads", motorway_link: "heavyRoads",
+    trunk: "heavyRoads",     trunk_link: "heavyRoads",
+    primary: "mediumRoads",  primary_link: "mediumRoads",
+    secondary: "mediumRoads",secondary_link: "mediumRoads",
+    tertiary: "localRoads",  residential: "localRoads",
+    unclassified: "localRoads", service: "localRoads",
+  };
+
+  for (const el of elements) {
+    const t = el.tags || {};
+
+    /* Roads */
+    if (t.highway && hwMap[t.highway]) c[hwMap[t.highway]].push(el);
+    if (t.highway === "crossing")       c.crossings.push(el);
+    if (t.highway === "street_lamp")    c.lamps.push(el);
+    if (t.foot === "yes")               c.footNodes.push(el);
+    if (t.lit === "yes")                c.litWays.push(el);
+
+    /* Green */
+    if (t.leisure && /^(park|garden|playground|recreation_ground|nature_reserve)$/.test(t.leisure)) c.greenSpaces.push(el);
+    if (t.landuse && /^(grass|forest|meadow|village_green)$/.test(t.landuse))                       c.greenSpaces.push(el);
+    if (t.natural === "tree") c.trees.push(el);
+
+    /* Water — comprehensive tag coverage */
+    if (
+      (t.natural  && /^(water|bay|coastline|wetland|beach|sand)$/.test(t.natural))  ||
+      (t.waterway && /^(river|stream|canal|drain|ditch)$/.test(t.waterway))         ||
+      (t.landuse  && /^(reservoir|basin)$/.test(t.landuse))
+    ) c.water.push(el);
+
+    /* Restricted */
+    if (
+      (t.access  && /^(private|no|restricted)$/.test(t.access)) ||
+      (t.landuse && /^(military|industrial)$/.test(t.landuse))
+    ) c.restricted.push(el);
+
+    /* Services */
+    if (t.amenity && /^(hospital|clinic|police|fire_station|pharmacy|bus_stop|bus_station)$/.test(t.amenity)) c.emergency.push(el);
+    if (t.shop || (t.amenity && /^(restaurant|cafe|bank|atm|supermarket)$/.test(t.amenity))) c.amenities.push(el);
+  }
+  return c;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODULE 2 — detectNonWalkable(cats)
+   Returns { type, title, message } if area is unsuitable, else null.
+   Called BEFORE scoring so we never return a false walkability number.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function detectNonWalkable(cats) {
+  const T = CONFIG.thresholds;
+
+  /* Rule 1: Water bodies present → physically inaccessible */
+  if (cats.water.length >= T.waterElements) {
+    return {
+      type:    "water",
+      title:   "Water body detected",
+      message: `${cats.water.length} water feature${cats.water.length > 1 ? "s" : ""} found within ${CONFIG.analysisRadius} m of this point. This location is on or beside a water body and is not walkable.`,
+    };
+  }
+
+  /* Rule 2: Private / military / restricted zone */
+  if (cats.restricted.length >= T.restrictedWays) {
+    return {
+      type:    "blocked",
+      title:   "Restricted area",
+      message: `Access-restricted or private zones (military, private land) dominate this area. Pedestrian access is not permitted.`,
+    };
+  }
+
+  /* Rule 3: High-speed road only, no pedestrian infrastructure at all */
+  if (
+    cats.footways.length === 0       &&
+    cats.crossings.length === 0      &&
+    cats.heavyRoads.length >= T.highwayOnlyRoads
+  ) {
+    return {
+      type:    "blocked",
+      title:   "Highway-only zone",
+      message: `Only high-speed roads detected (${cats.heavyRoads.length} motorway/trunk segments). No footways or crossings exist here — this location is not safe for walking.`,
+    };
+  }
+
+  return null;   // area is walkable
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODULE 3 — checkMapillaryCoverage(lat, lng)
+   Visual signal: more street-level images → more active/public area
+   ═══════════════════════════════════════════════════════════════════════════ */
+async function checkMapillaryCoverage(lat, lng) {
+  const token = CONFIG.mapillaryToken;
+  if (!token) {
+    return {
+      hasCoverage: null,
+      imageCount:  null,
+      confidence:  "unknown",
+      note:        "No Mapillary token configured — visual check skipped.",
+    };
+  }
+
+  const d   = CONFIG.mapillaryDelta;
+  const bbox = `${lng - d},${lat - d},${lng + d},${lat + d}`;
+  const url  = `https://graph.mapillary.com/images?access_token=${encodeURIComponent(token)}&fields=id&limit=10&bbox=${bbox}`;
+
+  try {
+    const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`Mapillary HTTP ${res.status}`);
+    const data = await res.json();
+    const n    = (data.data || []).length;
+    return {
+      hasCoverage: n > 0,
+      imageCount:  n,
+      confidence:  n >= 5 ? "high" : n >= 1 ? "medium" : "low",
+      note:        n > 0
+        ? `${n} street-level image${n > 1 ? "s" : ""} found — area appears active and public.`
+        : "No street-level imagery nearby — limited visual confidence.",
+    };
+  } catch {
+    return { hasCoverage: null, imageCount: null, confidence: "unknown", note: "Mapillary check failed." };
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODULE 4 — computeWalkabilityScore(cats, mapillaryCov)
+   Pure function. Returns { total:0-100, breakdown:{}, confidence }
+   ═══════════════════════════════════════════════════════════════════════════ */
+function computeWalkabilityScore(cats, mapillaryCov) {
+  /* Convenience helpers */
+  const n  = (arr) => arr.length;
+  const sc = (val, iMin, iMax, oMin, oMax) =>  // linear interpolation
+    oMin + ((Math.min(Math.max(val, iMin), iMax) - iMin) / (iMax - iMin)) * (oMax - oMin);
+
+  /* ── Sidewalk score (weight 30%) ────────────────────────────────────
+     Footways + crossings + foot=yes nodes are direct pedestrian signals  */
+  const sidewalk = clamp(
+    20
+    + sc(n(cats.footways),  0, 12, 0, 55)
+    + sc(n(cats.crossings), 0,  6, 0, 20)
+    + sc(n(cats.footNodes), 0,  5, 0,  5)
+  );
+
+  /* ── Road-type score (weight 20%) ───────────────────────────────────
+     Motorways/trunks → penalty; residential/local roads → bonus         */
+  const roadPenalty = sc(n(cats.heavyRoads),  0, 6, 0, 50);
+  const roadBonus   = sc(n(cats.localRoads),  0, 8, 0, 40);
+  const roadType    = clamp(60 + roadBonus - roadPenalty);
+
+  /* ── Lighting score (weight 15%) ────────────────────────────────────
+     Street lamps + lit=yes ways                                         */
+  const lighting = clamp(
+    20
+    + sc(n(cats.lamps),    0, 15, 0, 50)
+    + sc(n(cats.litWays),  0,  6, 0, 30)
+  );
+
+  /* ── Crossings score (weight 10%) ───────────────────────────────────
+     Designated pedestrian crossings — safety-critical                   */
+  const crossings = clamp(10 + sc(n(cats.crossings), 0, 8, 0, 90));
+
+  /* ── Mapillary score (weight 10%) ───────────────────────────────────
+     Street-level coverage → proxy for publicly active, safe-feeling area */
+  const mapillary = mapillaryCov.confidence === "high"   ? 90
+                  : mapillaryCov.confidence === "medium" ? 62
+                  : mapillaryCov.confidence === "low"    ? 30
+                  : 50;   // unknown → neutral
+
+  /* ── Density score (weight 15%) ─────────────────────────────────────
+     Count of all walkable features: amenities, emergency, footways, etc  */
+  const densityCount = n(cats.footways) + n(cats.amenities) + n(cats.emergency) + n(cats.crossings);
+  const density = clamp(10 + sc(densityCount, 0, 25, 0, 90));
+
+  /* ── Heavy-road global multiplier ──────────────────────────────────
+     If motorways dominate the buffer → suppress scores that assume safety */
+  const heavyMult = n(cats.heavyRoads) >= CONFIG.thresholds.heavyRoadPenalty
+    ? Math.max(0.45, 1 - (n(cats.heavyRoads) - 2) * 0.12)
+    : 1.0;
+
+  const breakdown = {
+    sidewalk:  clamp(Math.round(sidewalk  * heavyMult)),
+    roadType:  clamp(Math.round(roadType)),        // roadType already self-penalises
+    lighting:  clamp(Math.round(lighting  * heavyMult)),
+    crossings: clamp(Math.round(crossings * heavyMult)),
+    mapillary,
+    density:   clamp(Math.round(density   * heavyMult)),
+  };
+
+  /* ── Weighted total ─────────────────────────────────────────────── */
+  const W = CONFIG.weights;
+  const total = clamp(Math.round(
+    breakdown.sidewalk  * W.sidewalk  +
+    breakdown.roadType  * W.roadType  +
+    breakdown.lighting  * W.lighting  +
+    breakdown.crossings * W.crossings +
+    breakdown.mapillary * W.mapillary +
+    breakdown.density   * W.density
+  ));
+
+  /* ── Data confidence ──────────────────────────────────────────── */
+  const totalNodes = Object.values(cats).reduce((s, a) => s + a.length, 0);
+  const confidence = totalNodes >= 30 ? "high" : totalNodes >= 10 ? "medium" : "low";
+
+  return { total, breakdown, confidence };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PIPELINE — runAnalysis()
+   Orchestrates all four modules in order.
+   ═══════════════════════════════════════════════════════════════════════════ */
+async function runAnalysis(loc) {
+  if (busy) return;
+  busy = true;
+  userLocation = loc;
+
+  setStatus("loading", "Querying OpenStreetMap data…");
+  setRefreshDisabled(true);
+  showSkeletons();
+  drawRing(loc);
+
+  /* Show Mapillary card early */
+  document.getElementById("mapillaryCard").style.display = "block";
+  document.getElementById("mapillaryRow").innerHTML =
+    `<i class="fas fa-spinner fa-spin" style="color:var(--teal);"></i><span>Checking Mapillary coverage…</span>`;
+
+  try {
+    /* MODULE 1 + 3 in parallel */
+    const [cats, mapillaryCov] = await Promise.all([
+      getOSMFeatures(loc.lat, loc.lng),
+      checkMapillaryCoverage(loc.lat, loc.lng),
+    ]);
+
+    /* MODULE 2: non-walkable gate */
+    const blocked = detectNonWalkable(cats);
+    if (blocked) {
+      _renderBlocked(blocked);
+      drawMarkerBlocked(loc, blocked.type);
+      renderMapillaryCoverage(mapillaryCov);
+      setStatus("blocked", `⚠ ${blocked.title} — area not suitable for walking`);
+      busy = false;
+      setRefreshDisabled(false);
+      return;
+    }
+
+    /* MODULE 4: compute score */
+    const result = computeWalkabilityScore(cats, mapillaryCov);
+
+    /* Render everything */
+    _renderScore(result, true);
+    _renderFactors(result.breakdown, cats, mapillaryCov);
+    renderMapillaryCoverage(mapillaryCov);
+    clearAlert();
+    drawMarkerGood(loc, result.total);
+
+    const grade = _grade(result.total);
+    setStatus("success",
+      `Analysis complete — ${grade.label} (${result.total}/100) · ${result.confidence} data confidence`);
+
+  } catch (err) {
+    console.warn("[SmartFoot] OSM fetch failed:", err.message);
+    /* Graceful offline fallback */
+    const fb = _fallbackScore(loc.lat, loc.lng);
+    _renderScore({ total: fb.total, breakdown: fb.breakdown, confidence: "low" }, false);
+    _renderFactors(fb.breakdown, null, { confidence: "unknown", note: "OSM unavailable." });
+    document.getElementById("mapillaryRow").innerHTML =
+      `<i class="fas fa-triangle-exclamation" style="color:var(--amber);"></i>
+       <span>Network unavailable — estimated scores shown.</span>`;
+    setStatus("warning", "OSM unavailable — showing deterministic estimated scores.");
+  }
+
+  busy = false;
+  setRefreshDisabled(false);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RENDER HELPERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+function _renderScore({ total, confidence }, isLive) {
+  const grade  = _grade(total);
+  const circ   = 2 * Math.PI * 54;           // svg circumference for r=54
+  const offset = circ - (total / 100) * circ;
+
+  const fill = document.getElementById("donutFill");
+  fill.style.stroke            = grade.color;
+  fill.style.strokeDashoffset  = String(offset);
+
+  const val = document.getElementById("scoreValue");
+  val.textContent   = total;
+  val.style.color   = grade.color;
+  document.getElementById("scoreGrade").textContent = grade.label;
+
+  /* Chip */
+  const chip = document.getElementById("dataChip");
+  chip.className = isLive ? "chip chip-live" : "chip chip-offline";
+  chip.innerHTML = isLive
+    ? `<i class="fas fa-circle" style="font-size:.5rem;"></i> Live OSM`
+    : `<i class="fas fa-circle" style="font-size:.5rem;"></i> Estimated`;
+
+  const confLabels = { high: "High data confidence", medium: "Medium confidence", low: "Limited data — ±15%" };
+  document.getElementById("confidenceText").textContent = confLabels[confidence] || "";
+}
+
+function _renderBlocked(reason) {
+  /* Zero the donut */
+  const fill = document.getElementById("donutFill");
+  fill.style.stroke          = reason.type === "water" ? "#0ea5e9" : "#ef4444";
+  fill.style.strokeDashoffset = "339.3";
+
+  const val = document.getElementById("scoreValue");
+  val.textContent = reason.type === "water" ? "~" : "0";
+  val.style.color = reason.type === "water" ? "#0ea5e9" : "#ef4444";
+  document.getElementById("scoreGrade").textContent =
+    reason.type === "water" ? "Not Walkable" : "Blocked";
+
+  const chip = document.getElementById("dataChip");
+  chip.className = "chip chip-blocked";
+  chip.innerHTML = reason.type === "water"
+    ? `<i class="fas fa-water" style="font-size:.6rem;"></i> Water`
+    : `<i class="fas fa-ban" style="font-size:.6rem;"></i> Restricted`;
+  document.getElementById("confidenceText").textContent = "";
+
+  /* Alert banner */
+  const box = document.getElementById("alertBox");
+  box.style.display = "block";
+  box.innerHTML = `
+    <div class="alert-box ${reason.type === "water" ? "water" : "blocked"}">
+      <i class="fas ${reason.type === "water" ? "fa-water" : "fa-ban"}"></i>
+      <div>
+        <div class="alert-title">⚠ ${reason.title}</div>
+        <div>${reason.message}</div>
+      </div>
+    </div>`;
+
+  /* Empty factor list */
+  document.getElementById("factorsList").innerHTML =
+    `<p style="color:var(--muted);font-size:.85rem;text-align:center;padding:1rem;">
+       No walkability factors to display for this area type.
+     </p>`;
+  document.getElementById("weightTags").innerHTML = "";
+}
+
+/* Factor definitions — order controls display order */
+const FACTOR_DEFS = [
+  { key: "sidewalk",  label: "Sidewalk Presence",    icon: "fa-person-walking", iconBg: "#22c55e", weight: 30 },
+  { key: "roadType",  label: "Road Safety",          icon: "fa-road",           iconBg: "#3b82f6", weight: 20 },
+  { key: "lighting",  label: "Street Lighting",      icon: "fa-lightbulb",      iconBg: "#f59e0b", weight: 15 },
+  { key: "crossings", label: "Pedestrian Crossings", icon: "fa-person",         iconBg: "#8b5cf6", weight: 10 },
+  { key: "mapillary", label: "Visual Coverage",      icon: "fa-camera",         iconBg: "#00897b", weight: 10 },
+  { key: "density",   label: "Urban Density",        icon: "fa-city",           iconBg: "#ef4444", weight: 15 },
+];
+
+function _renderFactors(breakdown, cats, mapillaryCov) {
+  const list = document.getElementById("factorsList");
+  list.innerHTML = "";
+
+  FACTOR_DEFS.forEach((def) => {
+    const score = breakdown[def.key] ?? 50;
+    const grade = _grade(score);
+
+    /* Evidence note from raw OSM counts */
+    let note = "";
+    if (cats) {
+      const n = (a) => (a ? a.length : 0);
+      if (def.key === "sidewalk")  note = `${n(cats.footways)} footways · ${n(cats.crossings)} crossings`;
+      if (def.key === "roadType")  note = `${n(cats.heavyRoads)} major · ${n(cats.localRoads)} local roads`;
+      if (def.key === "lighting")  note = `${n(cats.lamps)} lamps · ${n(cats.litWays)} lit ways`;
+      if (def.key === "crossings") note = `${n(cats.crossings)} designated crossings`;
+      if (def.key === "density")   note = `${n(cats.amenities) + n(cats.emergency)} walkable features`;
+    }
+    if (def.key === "mapillary") note = mapillaryCov.note || "";
+
+    const row = document.createElement("div");
+    row.className = "factor-row";
+    row.innerHTML = `
+      <div class="factor-icon" style="background:${def.iconBg};">
+        <i class="fas ${def.icon}"></i>
+      </div>
+      <div class="factor-body">
+        <div class="factor-name">${def.label}</div>
+        <div class="factor-bar-wrap">
+          <div class="factor-bar-fill" id="bar-${def.key}" style="background:${grade.color};"></div>
+        </div>
+        ${note ? `<div class="factor-note">${note}</div>` : ""}
+      </div>
+      <div class="factor-pct" style="color:${grade.color};">${score}</div>
+    `;
+    list.appendChild(row);
+
+    /* Animate bar in after paint */
+    requestAnimationFrame(() => setTimeout(() => {
+      const b = document.getElementById(`bar-${def.key}`);
+      if (b) b.style.width = `${score}%`;
+    }, 60));
+  });
+
+  /* Weight reference tags */
+  const wt = document.getElementById("weightTags");
+  wt.innerHTML = FACTOR_DEFS.map((d) =>
+    `<span class="weight-tag">${d.label}: ${d.weight}%</span>`
+  ).join("");
+}
+
+function renderMapillaryCoverage(cov) {
+  const row   = document.getElementById("mapillaryRow");
+  const icon  = cov.hasCoverage === true ? "fa-circle-check"
+              : cov.hasCoverage === false ? "fa-circle-xmark"
+              : "fa-circle-question";
+  const color = cov.confidence === "high"   ? "var(--green-500)"
+              : cov.confidence === "medium" ? "var(--amber)"
+              : cov.confidence === "low"    ? "var(--red)"
+              : "var(--muted)";
+  row.innerHTML = `
+    <i class="fas ${icon}" style="color:${color};font-size:1rem;"></i>
+    <span>${cov.note || "Mapillary check complete."}</span>
+  `;
+}
+
+function clearAlert() {
+  const b = document.getElementById("alertBox");
+  b.style.display = "none";
+  b.innerHTML     = "";
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAP MARKERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+function drawRing(loc) {
+  layers.ring.clearLayers();
+  L.circle([loc.lat, loc.lng], {
+    radius: CONFIG.analysisRadius,
+    color: "#2e7d32", weight: 1.5,
+    fillColor: "#22c55e", fillOpacity: 0.05,
+    dashArray: "6 4",
+  }).addTo(layers.ring);
+}
+
+function drawMarkerGood(loc, score) {
+  layers.user.clearLayers();
+  const g = _grade(score);
+  L.circleMarker([loc.lat, loc.lng], {
+    radius: 10, color: "#fff", weight: 3,
+    fillColor: g.color, fillOpacity: 1,
+  }).addTo(layers.user)
+    .bindPopup(`<strong>Walkability: ${score}/100</strong><br>${g.label}`)
+    .openPopup();
+}
+
+function drawMarkerBlocked(loc, type) {
+  layers.user.clearLayers();
+  const color = type === "water" ? "#0ea5e9" : "#ef4444";
+  L.circleMarker([loc.lat, loc.lng], {
+    radius: 10, color: "#fff", weight: 3,
+    fillColor: color, fillOpacity: 1,
+  }).addTo(layers.user)
+    .bindPopup("⚠ Area not suitable for walking")
+    .openPopup();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   OFFLINE FALLBACK — deterministic seed-based (no random, reproducible)
+   ═══════════════════════════════════════════════════════════════════════════ */
+function _fallbackScore(lat, lng) {
+  const seed = Math.abs(Math.sin(lat * 12.9898 + lng * 78.233));
+  const base = Math.round(50 + seed * 22);
+  const W    = CONFIG.weights;
+  const breakdown = {
+    sidewalk:  clamp(base + 3),
+    roadType:  clamp(base + 6),
+    lighting:  clamp(base - 4),
+    crossings: clamp(base - 2),
+    mapillary: 50,
+    density:   clamp(base + 1),
+  };
+  const total = clamp(Math.round(
+    breakdown.sidewalk  * W.sidewalk  +
+    breakdown.roadType  * W.roadType  +
+    breakdown.lighting  * W.lighting  +
+    breakdown.crossings * W.crossings +
+    breakdown.mapillary * W.mapillary +
+    breakdown.density   * W.density
+  ));
+  return { total, breakdown };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHARED UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+function _grade(score) {
+  if (score >= 80) return { label: "Excellent", color: "#22c55e" };
+  if (score >= 60) return { label: "Good",      color: "#84cc16" };
+  if (score >= 40) return { label: "Fair",      color: "#f59e0b" };
+  if (score >= 20) return { label: "Poor",      color: "#ef4444" };
+  return                  { label: "Very Poor", color: "#991b1b" };
+}
+
+function clamp(v) { return Math.max(0, Math.min(100, Math.round(v))); }
+
+function showSkeletons() {
+  document.getElementById("factorsList").innerHTML =
+    Array(4).fill('<div class="skel" style="height:44px;"></div>').join("");
+  document.getElementById("weightTags").innerHTML = "";
+  clearAlert();
+}
+
+function setStatus(type, msg) {
+  const bar  = document.getElementById("status-bar");
+  bar.className = type;
+  document.getElementById("status-text").textContent = msg;
+  /* Pulse dot only during loading */
+  let pulse = bar.querySelector(".pulse");
+  if (type === "loading" && !pulse) {
+    pulse = document.createElement("div");
+    pulse.className = "pulse";
+    bar.prepend(pulse);
+  } else if (type !== "loading" && pulse) {
+    pulse.remove();
+  }
+}
+
+function setRefreshDisabled(v) {
+  const btn = document.getElementById("refreshBtn");
+  if (btn) btn.disabled = v;
+}
+
+/* ── Public button actions ── */
+function refreshAnalysis() {
+  if (!userLocation || busy) return;
+  runAnalysis(userLocation);
+}
+
+function shareLocation() {
+  if (!userLocation) return;
+  const url = `https://www.openstreetmap.org/?mlat=${userLocation.lat}&mlon=${userLocation.lng}#map=17/${userLocation.lat}/${userLocation.lng}`;
+  if (navigator.share) {
+    navigator.share({ title: "SmartFoot Walkability Score", url });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => setStatus("success", "Link copied to clipboard."));
+  }
+}
+</script>
+</body>
+</html>

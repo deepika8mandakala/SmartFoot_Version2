@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartFoot | Walkability Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1602784877446-b9f87ed7f4c2?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header, footer {
+      background: linear-gradient(90deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(6px);
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+    }
+    .logo-title img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+    }
+    .nav-buttons a {
+      color: white;
+      margin-left: 25px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-buttons a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      padding: 60px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      color: #008000;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 25px rgba(34, 139, 34, 0.6);
+    }
+    .card i {
+      font-size: 45px;
+      margin-bottom: 15px;
+      color: #246111;
+    }
+    .card h2 {
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: #2ec166;
+    }
+
+    footer {
+      margin-top: auto;
+      font-size: 14px;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-title">
+      <img src="smart-foot.png" alt="SmartFoot Logo" />
+      <span class="title">SmartFoot</span>
+    </div>
+    <div class="nav-buttons">
+      <a href="#" onclick="location.href='home.html'">Home</a>
+      <a href="#" onclick="location.href='about.html'">About Us</a>
+    </div>
+  </header>
+
+  <!-- Cards Section -->
+  <main>
+    <div class="card" onclick="location.href='safe-route.html'">
+      <i class="fas fa-map-marked-alt"></i>
+      <h2>Safe Route Planner</h2>
+      <p>Navigate safe routes with hazard alerts and real-time area safety data.</p>
+    </div>
+
+    <div class="card" onclick="location.href='walkability.html'">
+      <i class="fas fa-walking"></i>
+      <h2>Live Walkability Scores</h2>
+      <p>Check area walkability using green cover, lighting, and footpath safety.</p>
+    </div>
+
+    <div class="card" onclick="location.href='feedback.html'">
+      <i class="fas fa-thumbs-up"></i>
+      <h2>Step Up Leaderboard</h2>
+      <p>Helps setting daily step goals and stay fit.</p>
+    </div>
+
+    <div class="card" onclick="location.href='report-issues.html'">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h2>Report Issues</h2>
+      <p>Spot hazards like potholes or broken lights? Report instantly.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p><i class="fas fa-phone"></i> Contact Info |
+    <a href="#"><i class="fab fa-facebook"></i> Social Links</a> |
+    <a href="#"><i class="fas fa-lock"></i> Privacy Policy</a> |
+    <a href="#"><i class="fas fa-file-alt"></i> Terms</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+import pandas as pd
+
+# Extended list of major routes and intercity corridors in Visakhapatnam district
+extended_routes = [
+    {"id": 1, "from_location": "Anakapalle", "to_location": "Duvvada", "summary": "Route via Sabbavaram", "safetyScore": 70, "waypoints": "Sabbavaram"},
+    {"id": 2, "from_location": "Duvvada", "to_location": "Auto Nagar", "summary": "Route along NH-16 bypass", "safetyScore": 65, "waypoints": "Steel Plant Gate"},
+    {"id": 3, "from_location": "Auto Nagar", "to_location": "Sheela Nagar", "summary": "Route via Convent Junction", "safetyScore": 68, "waypoints": ""},
+    {"id": 4, "from_location": "Sheela Nagar", "to_location": "Gopalpatnam", "summary": "Route through NAD road", "safetyScore": 75, "waypoints": "Airport"},
+    {"id": 5, "from_location": "Gopalpatnam", "to_location": "NAD Road", "summary": "Inner city corridor", "safetyScore": 80, "waypoints": ""},
+    {"id": 6, "from_location": "NAD Road", "to_location": "Elamanchili", "summary": "Route via NH-16", "safetyScore": 60, "waypoints": ""},
+    {"id": 7, "from_location": "Elamanchili", "to_location": "Rajiv Nagar", "summary": "Scenic road with village access", "safetyScore": 74, "waypoints": ""},
+    {"id": 8, "from_location": "Rajiv Nagar", "to_location": "Port Road", "summary": "Route with freight traffic", "safetyScore": 58, "waypoints": "Gajuwaka"},
+    {"id": 9, "from_location": "Port Road", "to_location": "Beach Road", "summary": "Route via RK Beach", "safetyScore": 85, "waypoints": "RK Beach"},
+    {"id": 10, "from_location": "Beach Road", "to_location": "Siripuram", "summary": "Promenade route", "safetyScore": 90, "waypoints": "Submarine Museum"},
+    {"id": 11, "from_location": "Siripuram", "to_location": "Jagadamba", "summary": "Route via Dutt Island", "safetyScore": 88, "waypoints": "Dutt Island"},
+    {"id": 12, "from_location": "Jagadamba", "to_location": "RTC Complex", "summary": "Main city shopping hub", "safetyScore": 82, "waypoints": "KGH"},
+    {"id": 13, "from_location": "RTC Complex", "to_location": "Gajuwaka", "summary": "Industrial link road", "safetyScore": 62, "waypoints": "Scindia"},
+    {"id": 14, "from_location": "Gajuwaka", "to_location": "Anakapalle", "summary": "Route via Parawada", "safetyScore": 66, "waypoints": "Parawada"},
+    {"id": 15, "from_location": "Old Central Jail", "to_location": "Jagadamba", "summary": "Heritage corridor", "safetyScore": 84, "waypoints": "KGH"},
+    {"id": 16, "from_location": "Dwarakanagar", "to_location": "Gurudwara Jn.", "summary": "Busy junction corridor", "safetyScore": 81, "waypoints": ""},
+    {"id": 17, "from_location": "Rednam Circle", "to_location": "Siripuram", "summary": "Route via Dutt Island", "safetyScore": 87, "waypoints": "Dutt Island"},
+    {"id": 18, "from_location": "Siripuram", "to_location": "GVMC", "summary": "Short connector", "safetyScore": 80, "waypoints": ""},
+    {"id": 19, "from_location": "Siripuram", "to_location": "Beach Road", "summary": "CBI Rd & Lawsons Bay", "safetyScore": 85, "waypoints": "Old CBI"},
+    {"id": 20, "from_location": "Siripuram", "to_location": "Beach Road", "summary": "AU out gate route", "safetyScore": 83, "waypoints": "AU Gate"},
+    {"id": 21, "from_location": "Tycoon Jn.", "to_location": "Mosque", "summary": "VIP Road stretch", "safetyScore": 79, "waypoints": ""},
+    {"id": 22, "from_location": "Seven Hills Jn.", "to_location": "Vizag Central", "summary": "Via Jagadamba Jn.", "safetyScore": 86, "waypoints": "Jagadamba Jn."}
+]
+
+# Convert to DataFrame
+extended_df = pd.DataFrame(extended_routes)
+
+# Save to CSV
+csv_extended_path = "data/safety_scores_full.csv"  # ✅ This path is correct for your Flask app
+extended_df.to_csv(csv_extended_path, index=False)
+
+print("CSV saved to:", csv_extended_path)

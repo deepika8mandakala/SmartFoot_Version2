@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safe Route Planner | SmartFoot</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom, #e9f7ef, #c8facc);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #26332a;
+    }
+
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-title img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .nav-buttons a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(420px, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .card,
+    .map-shell,
+    .navigation-panel,
+    .street-view-panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card {
+      padding: 22px;
+      align-self: start;
+    }
+
+    .card h2 {
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 1.35rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 1rem;
+    }
+
+    .location-input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .location-label {
+      font-weight: 600;
+      color: #2e7d32;
+      font-size: 0.9rem;
+      margin-left: 4px;
+    }
+
+    .location-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .location-input,
+    .duration-controls select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid #d7dfd8;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #fbfdfb;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .location-input:focus,
+    .duration-controls select:focus {
+      outline: none;
+      border-color: #43a047;
+      box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.18);
+      background: white;
+    }
+
+    .suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #cfd8d1;
+      border-radius: 8px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+      max-height: 230px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1200;
+    }
+
+    .suggestion-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #edf2ee;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item.active {
+      background: #e8f5e9;
+    }
+
+    .suggestion-title {
+      display: block;
+      font-weight: 700;
+      color: #1b5e20;
+    }
+
+    .suggestion-subtitle {
+      display: block;
+      color: #5c6b61;
+      font-size: 0.82rem;
+      margin-top: 2px;
+    }
+
+    .btn,
+    .current-location-btn,
+    .route-option button {
+      background: #43a047;
+      color: white;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      width: 100%;
+    }
+
+    .btn:hover:not(:disabled),
+    .current-location-btn:hover:not(:disabled),
+    .route-option button:hover {
+      background: #2e7d32;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled,
+    .current-location-btn:disabled {
+      background: #aeb9b0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .current-location-btn {
+      width: 48px;
+      min-width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .current-location-btn .fa-spinner {
+      display: none;
+    }
+
+    .current-location-btn.loading .fa-spinner {
+      display: inline-block;
+    }
+
+    .current-location-btn.loading .fa-location-dot {
+      display: none;
+    }
+
+    .duration-controls {
+      width: 100%;
+      padding: 15px;
+      background-color: #f8faf8;
+      border-radius: 8px;
+      border: 1px solid #dbe5dd;
+      display: none;
+      gap: 12px;
+    }
+
+    .duration-controls.visible {
+      display: grid;
+    }
+
+    .preference-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+      justify-content: center;
+    }
+
+    .preference-options h3 {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 4px;
+      color: #2e7d32;
+      font-size: 1.05rem;
+    }
+
+    .preference-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #eef3ef;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease, color 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .preference-option input {
+      accent-color: #43a047;
+    }
+
+    .preference-option:has(input:checked) {
+      background: #43a047;
+      color: white;
+    }
+
+    #routesList {
+      margin-top: 18px;
+      width: 100%;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+
+    .route-option {
+      background: #e8f5e9;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .route-option.selected {
+      border-color: #1b5e20;
+      box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.18);
+    }
+
+    .route-option h3 {
+      color: #2e7d32;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 1.02rem;
+    }
+
+    .route-option p {
+      margin: 5px 0;
+      font-size: 0.92rem;
+    }
+
+    .route-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .route-option button {
+      padding: 8px 12px;
+      font-size: 0.86rem;
+      width: auto;
+    }
+
+    .route-feature-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: #81c784;
+      color: white;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      margin-right: 5px;
+      margin-bottom: 6px;
+    }
+
+    .map-column {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .map-shell {
+      overflow: hidden;
+      border: 1px solid rgba(46, 125, 50, 0.18);
+    }
+
+    #map {
+      height: min(68vh, 620px);
+      min-height: 460px;
+      width: 100%;
+      background: #dfeee2;
+    }
+
+    .leaflet-control-attribution {
+      font-size: 10px;
+    }
+
+    .status {
+      background: #ffffff;
+      border-left: 4px solid #43a047;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-weight: 600;
+      color: #2e7d32;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .navigation-panel {
+      display: none;
+      overflow: hidden;
+    }
+
+    .navigation-panel.visible {
+      display: block;
+    }
+
+    .navigation-header {
+      background: #2e7d32;
+      color: white;
+      padding: 12px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navigation-header button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .current-step-display,
+    .next-step-display {
+      padding: 14px 16px;
+      border-bottom: 1px solid #edf2ee;
+    }
+
+    .current-step-display {
+      background: #e8f5e9;
+    }
+
+    .navigation-distance {
+      font-size: 0.9rem;
+      color: #66736a;
+      margin-top: 5px;
+    }
+
+    .navigation-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f5f7f5;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .navigation-controls .btn {
+      width: auto;
+      min-width: 150px;
+    }
+
+    .voice-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+    }
+
+    .street-view-panel {
+      display: none;
+      overflow: hidden;
+    }
+
+    .street-view-panel.visible {
+      display: block;
+    }
+
+    .street-view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      background: #2e7d32;
+      color: white;
+    }
+
+    .street-view-frame {
+      width: 100%;
+      min-height: 360px;
+      border: 0;
+      background: #101810;
+    }
+
+    .street-view-empty {
+      padding: 24px;
+      color: #506257;
+      background: #f8faf8;
+    }
+
+    .street-view-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .street-view-controls .btn,
+    .street-view-controls select {
+      width: auto;
+      min-width: 130px;
+    }
+
+    .street-view-controls select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cad7cd;
+    }
+
+    .loading-container,
+    .error,
+    .empty-state {
+      padding: 14px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .loading-container {
+      color: #2e7d32;
+      background: #eef8ef;
+      justify-content: center;
+    }
+
+    .error {
+      color: #b42318;
+      background: #fff0ed;
+      border: 1px solid #ffd0c7;
+    }
+
+    .empty-state {
+      color: #53685b;
+      background: #f6faf7;
+      border: 1px dashed #c7d7cb;
+    }
+
+    .live-user-marker {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1a73e8;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    footer {
+      background: #2e7d32;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: auto;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      #map {
+        height: 55vh;
+        min-height: 380px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      header {
+        justify-content: center;
+        text-align: center;
+        padding: 12px 15px;
+      }
+
+      .nav-buttons {
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .location-input-group {
+        align-items: stretch;
+      }
+
+      .street-view-controls,
+      .navigation-controls {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .street-view-controls .btn,
+      .street-view-controls select,
+      .navigation-controls .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="smart-foot.png" alt="SmartFoot Logo" />
+      <span class="title">SmartFoot</span>
+    </div>
+    <nav class="nav-buttons" aria-label="Primary">
+      <a href="home.html">Home</a>
+      <a href="walkability.html">Dashboard</a>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card" aria-label="SmartFoot Route and Walk Planner">
+      <h2><i class="fas fa-map-marked-alt" aria-hidden="true"></i> SmartFoot Route Planner</h2>
+
+      <div class="input-group">
+        <div class="location-input-container">
+          <label for="from" class="location-label">Start Location</label>
+          <div class="location-input-group">
+            <input type="text" id="from" class="location-input" placeholder="e.g. Siripuram" autocomplete="off" aria-label="Start Location" required />
+            <button id="currentLocationBtn" class="current-location-btn" role="listbox" aria-label="Use current location" title="Use current location" type="button">
+              <i class="fas fa-location-dot"></i>
+              <i class="fas fa-spinner fa-spin"></i>
+            </button>
+          </div>
+          <div id="fromSuggestions" class="suggestions" role="listbox" aria-label="Start location suggestions"></div>
+        </div>
+
+        <div class="location-input-container">
+          <label for="to" class="location-label">End Location (Leave empty for circular walk)</label>
+          <input type="text" id="to" class="location-input" placeholder="e.g. Beach Road" autocomplete="off" aria-label="End Location" />
+          <div id="toSuggestions" class="suggestions" role="listbox" aria-label="End location suggestions"></div>
+        </div>
+
+        <button class="btn" id="findRoutesBtn" type="button">
+          <i class="fas fa-search"></i> Find A-to-B Routes
+        </button>
+        <button class="btn" id="findWalksBtn" type="button">
+          <i class="fas fa-shoe-prints"></i> Find Circular Walks
+        </button>
+
+        <div class="duration-controls" id="durationControls">
+          <div class="location-input-container">
+            <label for="walkDuration" class="location-label">Desired Walk Duration</label>
+            <select id="walkDuration" class="location-input" aria-label="Desired Walk Duration">
+              <option value="15">15 minutes</option>
+              <option value="30" selected>30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">60 minutes</option>
+              <option value="90">90 minutes</option>
+            </select>
+          </div>
+          <button class="btn" id="generateWalksBtn" type="button">
+            <i class="fas fa-route"></i> Generate Walks
+          </button>
+        </div>
+      </div>
+
+      <div class="preference-options" id="walkPreferences">
+        <h3>Route Preferences for Walks:</h3>
+        <label class="preference-option">
+          <input type="checkbox" name="preference" value="greenery" checked />
+          <i class="fas fa-tree"></i> Greenery & Parks
+        </label>
+        <label class="preference-option">
+          <input type="checkbox" name="preference" value="scenic" checked />
+          <i class="fas fa-mountain"></i> Scenic Views
+        </label>
+        <label class="preference-option">
+          <input type="checkbox" name="preference" value="amenities" checked />
+          <i class="fas fa-store"></i> Shops & Amenities
+        </label>
+        <label class="preference-option">
+          <input type="checkbox" name="preference" value="quiet" />
+          <i class="fas fa-volume-mute"></i> Quiet Streets
+        </label>
+        <label class="preference-option">
+          <input type="checkbox" name="preference" value="waterfront" />
+          <i class="fas fa-water"></i> Waterfront
+        </label>
+      </div>
+
+      <div id="routesList" aria-live="polite">
+        <div class="empty-state"><i class="fas fa-location-arrow"></i> Search for a route or use your current location to begin.</div>
+      </div>
+    </section>
+
+    <section class="map-column" aria-label="Map and navigation">
+      <div class="map-shell">
+        <div id="map" role="region" aria-label="Map showing routes"></div>
+      </div>
+
+      <div id="navigation-panel" class="navigation-panel">
+        <div class="navigation-header">
+          <h3 id="nav-title">Live Navigation</h3>
+          <button id="closeNavigationBtn" type="button" aria-label="Close navigation">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="current-step" class="current-step-display">
+          <h4>Current Step</h4>
+          <p id="current-instruction">Ready to navigate</p>
+          <p id="current-distance" class="navigation-distance"></p>
+        </div>
+        <div id="next-step" class="next-step-display">
+          <h4>Next Step</h4>
+          <p id="next-instruction"></p>
+          <p id="next-distance" class="navigation-distance"></p>
+        </div>
+        <div class="navigation-controls">
+          <button class="btn" id="stopNavigationBtn" type="button"><i class="fas fa-stop"></i> End Navigation</button>
+          <div class="voice-toggle">
+            <label for="voice-guidance">Voice:</label>
+            <input type="checkbox" id="voice-guidance" checked />
+          </div>
+        </div>
+      </div>
+
+      <div class="street-view-controls">
+        <button class="btn" id="start-tour" type="button"><i class="fas fa-play-circle"></i> Start Mapillary Tour</button>
+        <button class="btn" id="stop-tour" type="button"><i class="fas fa-pause-circle"></i> Stop Tour</button>
+        <label for="tour-speed">Speed:</label>
+        <select id="tour-speed" aria-label="Street View Tour Speed">
+          <option value="3000">Slow</option>
+          <option value="2000" selected>Normal</option>
+          <option value="1000">Fast</option>
+        </select>
+      </div>
+
+      <div id="street-view" class="street-view-panel" role="region" aria-label="Mapillary street-level imagery">
+        <div class="street-view-header">
+          <strong><i class="fas fa-street-view"></i> Mapillary Street View</strong>
+          <a id="mapillaryExternalLink" href="https://www.mapillary.com/app/" target="_blank" rel="noopener" style="color:white;">Open Mapillary</a>
+        </div>
+        <iframe id="mapillaryFrame" class="street-view-frame" title="Mapillary street-level imagery"></iframe>
+        <div id="streetViewEmpty" class="street-view-empty">
+          Select a route and start a Mapillary tour to preview street-level imagery near the path.
+        </div>
+      </div>
+
+      <div id="status" class="status">Ready to calculate route</div>
+    </section>
+  </main>
+
+  <footer>
+    <p><i class="fas fa-phone"></i> Contact Info |
+      <a href="#"><i class="fab fa-facebook"></i> Social Links</a> |
+      <a href="#"><i class="fas fa-lock"></i> Privacy Policy</a> |
+      <a href="#"><i class="fas fa-file-alt"></i> Terms</a>
+    </p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="static/map.js" defer></script>
+</body>
+</html>

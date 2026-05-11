@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us | SmartFoot</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+      color: #2e7d32;
+    }
+    header, footer {
+      background: linear-gradient(90deg, #2e7d32, #1b5e20);
+      color: white;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+     .logo-title {
+      display: flex;
+      align-items: center;
+    }
+    .logo-title img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+    }
+    .nav-buttons a {
+      color: white;
+      margin-left: 25px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-buttons a:hover {
+      text-decoration: underline;
+    }
+    .section {
+      padding: 40px;
+    }
+    .section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #1b5e20;
+      text-align: center;
+    }
+    .overview p {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 1.7;
+      color: #333;
+    }
+    .team-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .team-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 220px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .team-card img {
+      width: 150px;
+      border-radius: 10%;
+      margin-bottom: 1px;
+    }
+    .team-card h4 {
+      margin: 8px 0 4px;
+      color: #2e7d32;
+    }
+    .team-card p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .achievements {
+      margin-top: 40px;
+    }
+    .achievements ul {
+      max-width: 800px;
+      margin: 0 auto;
+      list-style: none;
+    }
+    .achievements li {
+      margin-bottom: 15px;
+      padding-left: 30px;
+      position: relative;
+      font-size: 1.05rem;
+      color: #444;
+    }
+    .achievements li::before {
+      content: "🏅";
+      position: absolute;
+      left: 0;
+    }
+
+    footer {
+      justify-content: center;
+      text-align: center;
+      font-size: 14px;
+      padding: 15px;
+      margin-top: 30px;
+    }
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-title">
+      <img src="smart-foot.png" alt="SmartFoot Logo" />
+      <span class="title">SmartFoot</span>
+    </div>
+    <div class="nav-buttons">
+      <a href="index.html">Home</a>
+      <a href="home.html">Dashboard</a>
+      <a href="about.html">About Us</a>
+    </div>
+  </header>
+
+  <!-- Overview Section -->
+  <section class="section overview">
+    <h2>About SmartFoot</h2>
+    <p>
+      SmartFoot is an intelligent pedestrian walkability platform that combines technology, safety, and sustainability
+      to make cities more walkable. Our solution empowers users to choose safe, green, and comfortable walking routes
+      using live walkability scores, issue reporting, and community feedback.
+    </p>
+  </section>
+
+  <!-- Team Section -->
+  <section class="section team">
+    <h2>Meet the Team</h2>
+    <div class="team-container">
+      <div class="team-card">
+        <img src="profile1.png" alt="Team Member">
+        <h4>Deepika Mandakala</h4>
+        <p>Full Stack & AI Developer</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100" alt="Team Member">
+        <h4>Sai Nikhil</h4>
+        <p>Backend & Map Integration</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100" alt="Team Member">
+        <h4>Sathvika</h4>
+        <p>ML & Walkability Score Model</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100" alt="Team Member">
+        <h4>Amrutha</h4>
+        <p>ML & Walkability Score Model</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100" alt="Team Member">
+        <h4>Amitesh</h4>
+        <p>ML & Walkability Score Model</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements Section -->
+  <section class="section achievements">
+    <h2>Achievements</h2>
+    <ul>
+      <li>Selected as a finalist at the GDG Smart Mobility Hackathon 2025.</li>
+      <li>Received special mention for practical use of open geospatial APIs.</li>
+      <li>Completed successful pilot testing in 3 city zones with 90% route accuracy for walkability.</li>
+      <li>Featured by <strong>SmartCity India Initiative</strong> for promoting eco-mobility</li>
+      <li>Integrated open-source mapping and demonstrated live walkability scoring in a real-world setting.</li>
+      <li>Presented at the Annual UrbanTech Youth Conference on AI and Accessibility.</li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p><i class="fas fa-phone"></i> Contact Info |
+    <a href="#"><i class="fab fa-facebook"></i> Social Links</a> |
+    <a href="#"><i class="fas fa-lock"></i> Privacy Policy</a> |
+    <a href="#"><i class="fas fa-file-alt"></i> Terms</a></p>
+  </footer>
+
+</body>
+</html>
