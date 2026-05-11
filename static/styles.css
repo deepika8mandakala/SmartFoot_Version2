@@ -1,0 +1,10 @@
+#map {
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+#scores div {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #2e7d32;
+}
