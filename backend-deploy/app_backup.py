@@ -2,6 +2,7 @@ import json
 import os
 import sqlite3
 from pathlib import Path
+from flask_cors import CORS
 
 from flask import Flask, abort, jsonify, render_template, request, send_from_directory
 
@@ -153,8 +154,8 @@ def get_safety_scores():
         app.logger.exception("Safety score lookup failed: %s", exc)
         return jsonify({"error": "Server error"}), 500
 
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    def handler(request):
-    return app(request.environ, start_response)
+    app.run(host="127.0.0.1", port=port)
+app = Flask(__name__, static_folder="static", template_folder="templates")
+CORS(app)
