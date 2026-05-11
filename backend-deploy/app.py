@@ -2,13 +2,13 @@ import json
 import os
 import sqlite3
 from pathlib import Path
-from flask_cors import CORS
 
 from flask import Flask, abort, jsonify, render_template, request, send_from_directory
 
 from backend.db import init_db
 from backend.scoring import predict_score
-
+from flask_cors import CORS
+CORS(app)
 
 BASE_DIR = Path(__file__).resolve().parent
 
