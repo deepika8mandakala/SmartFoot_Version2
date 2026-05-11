@@ -339,7 +339,26 @@
       { enableHighAccuracy: true, timeout: 9000, maximumAge: 120000 }
     );
   }
+ async function fetchWalkability(lat, lng) {
+  try {
+    const res = await fetch(
+      `https://your-render-url.onrender.com/api/walkability-data?lat=${lat}&lng=${lng}`
+    );
 
+    const data = await res.json();
+
+    console.log("API response:", data);
+
+    // Update UI (adjust IDs if needed)
+    document.getElementById("safetyScore").innerText = data.safety;
+    document.getElementById("greeneryScore").innerText = data.greenery;
+    document.getElementById("airScore").innerText = data.air;
+    document.getElementById("sidewalkScore").innerText = data.sidewalk;
+
+  } catch (err) {
+    console.error("API error:", err);
+  }
+}
   /**
    * Convert GPS coordinates to place name globally.
    * Returns human-readable name, no coordinates shown.
